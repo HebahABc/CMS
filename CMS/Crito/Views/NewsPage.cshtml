@@ -1,0 +1,10 @@
+﻿@using Umbraco.Cms.Web.Common.PublishedModels;
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<ContentModels.NewsPage>
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+@{
+	Layout = "LayoutWithBreadcrumb.cshtml";
+}
+
+
+@await Html.PartialAsync("_ArticlesList")
+@await Html.PartialAsync("_Subscribe")

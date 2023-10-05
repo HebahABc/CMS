@@ -1,0 +1,77 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@using Umbraco.Cms.Core.Models.PublishedContent;
+
+
+@{
+    var selection = Umbraco.Content(Guid.Parse("93f5e7bc-c01d-4f1b-b3e8-92ebf45479f0"))?
+        .ChildrenOfType("articleDetailPage")?
+        .Where(x => x.IsVisible())
+        .OrderByDescending(x => x.CreateDate).ToList();
+
+    var itemsPerPage = 3;
+    var pageNumber = 1;
+
+    if (!int.TryParse(Context.Request.Query["page"], out pageNumber))
+    {
+        pageNumber = 1;
+    }
+
+    var totalItems = selection?.Count() ?? 0;
+    var pagedItems = selection?.Skip((pageNumber - 1) * itemsPerPage).Take(itemsPerPage);
+
+  }
+     <!-- Articles & News Section -->
+    <section class="article-news-section">
+        <div class="container">
+            <div class="section-head">
+                <div class="section-title">
+                    <p>Article & News</p>
+                    <h2>Get Every Single Articles & News</h2>
+                </div>
+                <div class="news-link">
+                    <a class="transparent-btn" href="/News">Browse Articles<i class="fa-light fa-arrow-up-right"></i></a>
+                </div>
+            </div>
+            <div class="article-cards">
+                @if (pagedItems != null)
+                {
+                    @foreach (var item in pagedItems)
+                    {
+                        var url = item.Url();
+                        var date = item.CreateDate;
+                        var image = item.Value<IPublishedContent>("newsImage");
+                        var catergory = @item.Value("newsCategory");
+                        var title = item.Name();
+                        var description = @item.Value("newsPreamble");
+                        
+                        <a class="article-card" href="@url">
+                        <div class="article-date">
+                            <div class="day">@date.ToString("dd")</div>
+                            <div class="month">@date.ToString("MMM")</div>
+                        </div>
+                        <img src="@image?.Url()" alt="">
+                        <p class="category">@catergory</p>
+                        <h2>@title</h2>
+                        <p>@description</p>
+                    </a>
+                    }
+                }
+            </div>
+            <div class="black-dots">
+                @for (int i = 1; i <= Math.Ceiling((decimal)totalItems / itemsPerPage); i++)
+        {
+            if (i== pageNumber)
+            {
+                <a class="dots" href="?page=@i"><div id="dot1" class="black-dot"></div></a>
+            }
+            else
+            {
+                <a href="?page=@i"><div class="black-dot"></div></a>
+            }
+        }
+            </div>
+            <div class="small-screen-btn">
+                <a class="transparent-btn" href="/News">Browse Articles<i class="fa-light fa-arrow-up-right"></i></a>
+            </div>
+        </div>
+    </section>

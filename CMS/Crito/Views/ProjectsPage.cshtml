@@ -1,0 +1,38 @@
+﻿@using Umbraco.Cms.Web.Common.PublishedModels;
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<ContentModels.ProjectsPage>
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+@using Umbraco.Cms.Core.Models.PublishedContent;
+@{
+	Layout = "LayoutWithBreadcrumb.cshtml";
+}
+
+
+
+@{
+	var selection = Umbraco.Content(Guid.Parse("2f4d7e42-ce2b-4414-b80f-a21d640d4abe"))
+    .ChildrenOfType("projectDetails")
+    .Where(x => x.IsVisible());
+}
+
+
+  <!-- Article & News Section -->
+    <section class="articles-section">
+        <div class="container">
+            <h2 class="title">Our Projects</h2>
+            <div class="article-cards">
+ 
+                @foreach (var item in selection)
+                {
+                    var url = item.Url();
+                    var image = item.Value<IPublishedContent>("projectImage");
+                    var title = item.Value("projectTitle");
+                    
+                    <a class="article-card" href="@url">
+                    <img src="@image?.Url()" alt="">
+                    <h2>@title</h2>
+                    </a>
+                }
+    	
+            </div>
+        </div>
+    </section>

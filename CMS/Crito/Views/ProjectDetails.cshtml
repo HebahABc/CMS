@@ -1,0 +1,17 @@
+﻿@using Umbraco.Cms.Web.Common.PublishedModels;
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<ContentModels.ProjectDetails>
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+@using Umbraco.Cms.Core.Models.PublishedContent;
+@{
+	Layout = "LayoutWithBreadcrumb.cshtml";
+	 var image = Model.Value<IPublishedContent>("projectImage");
+}
+
+
+<!-- Articles Details Section -->
+    <section class="project-details-page">
+       <div class="container">
+            <h4 class="title">@Model.Value("projectTitle")</h4>
+            <img src="@image?.Url()" alt="">
+       </div>
+    </section>

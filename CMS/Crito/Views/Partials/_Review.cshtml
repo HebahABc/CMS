@@ -1,0 +1,67 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+
+
+
+
+@{
+	var selection = Umbraco.Content(Guid.Parse("c25e8623-c5c9-470c-905b-150c6bc1112e"))
+    .ChildrenOfType("reviewPage")
+    .Where(x => x.IsVisible());
+    
+    
+    var itemsPerPage = 3;
+    var pageNumber = 1;
+
+    if (!int.TryParse(Context.Request.Query["page"], out pageNumber))
+    {
+        pageNumber = 1;
+    }
+
+    var totalItems = selection?.Count() ?? 0;
+    var pagedItems = selection?.Skip((pageNumber - 1) * itemsPerPage).Take(itemsPerPage);
+}
+
+
+<!-- Reviews Section -->
+    <section class="Review-section">
+        <div class="container">
+            <div class="section-title">
+                <p>Testimonial</p>
+                <h2>What Our Client Says</h2>
+            </div>
+            <div class="client-says">
+            
+            @if (pagedItems != null) {
+            
+                @foreach (var item in pagedItems){
+                
+                    var image = item.Value<IPublishedContent>("clientImage");
+                    var stars = (int)item.Value("numberOfStars");
+                    
+                    <div class="client-card">
+                        <div class="evaluation">
+                            @for (int i = 1; i<= stars; i++)
+                                {
+                                    <i class="fa-solid fa-star"></i>
+                                }
+                        </div>
+                        <div class="client-review">
+                            <p>"@item.Value("clientComment")"</p>
+                        </div>
+                        <div class="client-info">
+                            <img src="@image?.Url()" alt="@item.Value("clientName")">
+                            <div class="info">
+                                <h4>@item.Value("clientName")</h4>
+                                <p>@item.Value("clientPosition"), @item.Value("clientCompany")</p>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+                
+            </div>
+            <div class="center-btn">
+                <a class="black-btn" href="/reviews">All Reviews<i class="fa-light fa-arrow-up-right"></i></a>
+            </div>
+        </div>
+    </section>

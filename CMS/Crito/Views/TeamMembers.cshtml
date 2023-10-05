@@ -1,0 +1,17 @@
+﻿@using Umbraco.Cms.Web.Common.PublishedModels;
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<ContentModels.TeamMembers>
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+@{
+	Layout = "LayoutWithBreadcrumb.cshtml";
+	var image = Model.Value<IPublishedContent>("memberImage");
+}
+
+
+<!-- Articles Details Section -->
+    <section class="project-details-page">
+       <div class="container">
+            <img src="@image?.Url()" alt="">
+            <h4 class="title">@Model.Value("memberName")</h4>
+            <h4 class="title">@Model.Value("memberRoll")</h4>
+       </div>
+    </section>

@@ -1,0 +1,81 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@using Umbraco.Cms.Core.Models.PublishedContent;
+
+
+@{
+    var selection = Umbraco.Content(Guid.Parse("93f5e7bc-c01d-4f1b-b3e8-92ebf45479f0"))?
+        .ChildrenOfType("articleDetailPage")?
+        .Where(x => x.IsVisible())
+        .OrderByDescending(x => x.CreateDate).ToList();
+
+    var itemsPerPage = 9;
+    var pageNumber = 1;
+
+    if (!int.TryParse(Context.Request.Query["page"], out pageNumber))
+    {
+        pageNumber = 1;
+    }
+
+    var totalItems = selection?.Count() ?? 0;
+    var pagedItems = selection?.Skip((pageNumber - 1) * itemsPerPage).Take(itemsPerPage);
+
+  }
+
+  <!-- Article & News Section -->
+    <section class="articles-section">
+        <div class="container">
+            <h2 class="title">Our News & Articles</h2>
+            <div class="article-cards">
+            @if (pagedItems != null)
+            {
+                @foreach (var item in pagedItems)
+                {
+                    var url = item.Url();
+                    var date = item.CreateDate;
+                    var image = item.Value<IPublishedContent>("newsImage");
+                    var catergory = @item.Value("newsCategory");
+                    var title = item.Name();
+                    var description = @item.Value("newsPreamble");
+                    
+                    <a class="article-card" href="@url">
+                    <div class="article-date">
+                        <div class="day">@date.ToString("dd")</div>
+                        <div class="month">@date.ToString("MMM")</div>
+                    </div>
+                    <img src="@image?.Url()" alt="">
+                    <p class="category">@catergory</p>
+                    <h2>@title</h2>
+                    <p>@description</p>
+                </a>
+                }
+            }
+
+    	
+            </div>
+        </div>
+
+        <div class="page-number">
+
+        @if (pageNumber > 1)
+        {
+            <a href="?page=@(pageNumber - 1)"><i class="fa-solid fa-chevron-left"></i></a>
+        }
+
+        @for (int i = 1; i <= Math.Ceiling((decimal)totalItems / itemsPerPage); i++)
+        {
+            if (i== pageNumber)
+            {
+                <a href="?page=@i" class="selected">@i</a>
+            }
+            else
+            {
+                <a href="?page=@i">@i</a>
+            }
+        }
+        @if (pageNumber < Math.Ceiling((decimal)totalItems / itemsPerPage))
+        {
+            <a href="?page=@(pageNumber + 1)"><i class="fa-solid fa-chevron-right"></i></a>
+        }
+            
+        </div>
+    </section>

@@ -1,0 +1,73 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+
+
+
+@{
+	var selection = Umbraco.Content(Guid.Parse("fa222041-5ae6-4ec1-a5c4-417543406698"))
+    .ChildrenOfType("teamMembers")
+    .Where(x => x.IsVisible());
+    
+     var itemsPerPage = 4;
+    var pageNumber = 1;
+
+    if (!int.TryParse(Context.Request.Query["page"], out pageNumber))
+    {
+        pageNumber = 1;
+    }
+
+    var totalItems = selection?.Count() ?? 0;
+    var pagedItems = selection?.Skip((pageNumber - 1) * itemsPerPage).Take(itemsPerPage);
+}
+
+
+
+
+<!-- Team Section -->
+    <section class="team-section">
+        <div class="container">
+            <div class="head">
+                <div class="section-title">
+                    <p>Meet Our Team</p>
+                    <h2>Experience Team Members</h2>
+                </div>
+                <div class="team-link">
+                    <a class="transparent-btn" href="/our-team">Browse Team<i class="fa-light fa-arrow-up-right"></i></a>
+                </div>
+            </div>
+            <div class="team-cards">
+                
+            	@foreach (var item in pagedItems)
+	            {
+	                var image = item.Value<IPublishedContent>("memberImage");
+	                var name = item.Value("memberName");
+	                var roll = item.Value("memberRoll");
+			        
+			        <a class="team-card" href="@item.Url()">
+                        <img src="@image?.Url()" alt="Kristine Palmer">
+                        <h4>@name</h4>
+                        <p>@roll</p>
+                    </a>
+	            }
+                
+                
+               
+            </div>
+            <div class="black-dots">
+                @for (int i = 1; i <= Math.Ceiling((decimal)totalItems / itemsPerPage); i++)
+                {
+                    if (i== pageNumber)
+                    {
+                        <a class="dots" href="?page=@i"><div id="dot1" class="black-dot"></div></a>
+                    }
+                    else
+                    {
+                        <a href="?page=@i"><div class="black-dot"></div></a>
+                    }
+                }
+            </div>
+            <div class="small-screen-btn">
+                <a class="transparent-btn" href="/our-team">Browse Team<i class="fa-light fa-arrow-up-right"></i></a>
+            </div>
+            
+        </div>
+    </section>

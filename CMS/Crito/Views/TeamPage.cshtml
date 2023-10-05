@@ -1,0 +1,41 @@
+﻿@using Umbraco.Cms.Web.Common.PublishedModels;
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<ContentModels.TeamPage>
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+@{
+	Layout = "LayoutWithBreadcrumb.cshtml";
+}
+
+
+
+@{
+	var selection = Umbraco.Content(Guid.Parse("fa222041-5ae6-4ec1-a5c4-417543406698"))
+    .ChildrenOfType("teamMembers")
+    .Where(x => x.IsVisible());
+    
+}
+
+
+
+<!-- Article & News Section -->
+    <section class="articles-section">
+        <div class="container">
+            <h2 class="title">Our Team</h2>
+            <div class="article-cards">
+                
+                @foreach (var item in selection)
+                {
+                    var url = item.Url();
+                    var image = item.Value<IPublishedContent>("memberImage");
+                    var name = item.Value("memberName") ;
+                    var roll = item.Value("memberRoll");
+                    
+                    <a class="article-card" href="@url">
+                    <img src="@image?.Url()" alt="">
+                    <h2>@name</h2>
+                    <h2>@roll</h2>
+                    </a>
+                }
+    	
+            </div>
+        </div>
+    </section>

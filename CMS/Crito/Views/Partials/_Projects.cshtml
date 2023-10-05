@@ -1,0 +1,52 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+
+
+
+@{
+	var selection = Umbraco.Content(Guid.Parse("2f4d7e42-ce2b-4414-b80f-a21d640d4abe"))
+    .ChildrenOfType("projectDetails")
+    .Where(x => x.IsVisible());
+    
+    
+    var itemsPerPage = 4;
+    var pageNumber = 1;
+
+    if (!int.TryParse(Context.Request.Query["page"], out pageNumber))
+    {
+        pageNumber = 1;
+    }
+
+    var totalItems = selection?.Count() ?? 0;
+    var pagedItems = selection?.Skip((pageNumber - 1) * itemsPerPage).Take(itemsPerPage);
+}
+
+
+
+
+
+<!-- Projects Section -->
+    <section class="projects-section">
+        <div class="container">
+            <div class="section-title">
+                <p>Project & Case Studies</p>
+                <h2>Let’s Looks Our Global Projects</h2>
+            </div>
+             <div class="projects-cases">
+            @foreach (var item in pagedItems)
+            	{
+            	    var image = item.Value<IPublishedContent>("projectImage");
+            		<a class="project" href="@item.Url()">
+                    <img src="@image?.Url()" alt="article image">
+                    <h3>@item.Value("projectTitle")</h3>
+                    <div class="read-more">
+                        Read More <i class="fa-light fa-arrow-up-right"></i>
+                    </div>
+                </a>
+            		
+            	}
+            </div>
+            <div class="center-btn">
+                <a class="black-btn" href="/projects">All Recent Projects <i class="fa-light fa-arrow-up-right"></i></a>
+            </div>
+        </div>
+    </section>
